@@ -1,0 +1,27 @@
+[
+  {
+    "title": "Calm",
+    "mood": "calm",
+    "url": "calm.mp3"
+  },
+  {
+    "title": "Energetic",
+    "mood": "energetic",
+    "url": "energetic.mp3"
+  },
+  {
+    "title": "Dramatic",
+    "mood": "dramatic",
+    "url": "dramatic.mp3"
+  },
+  {
+    "title": "Happy",
+    "mood": "happy",
+    "url": "happy.mp3"
+  },
+  {
+    "title": "Sad",
+    "mood": "sad",
+    "url": "sad.mp3"
+  }
+]
