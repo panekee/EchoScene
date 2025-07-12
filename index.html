@@ -4,11 +4,18 @@
   <meta charset="UTF-8" />
   <title>EchoScene Alpha</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- ✅ Aquí va el script de face-api.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
 </head>
 <body>
   <h1>EchoScene Alpha</h1>
+
   <input type="file" id="videoInput" accept=".mp4, .webm, .ogg, .mov, .mkv, .avi, .flv" />
   <video id="video" controls></video>
+  <canvas id="overlay" style="display:none;"></canvas>
+
+  <p id="status">Cargando modelos...</p>
   <button id="analyzeBtn">Analizar y Recomendar</button>
   <div id="result"></div>
 
