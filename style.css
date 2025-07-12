@@ -4,8 +4,21 @@ body {
   background: #111;
   color: #eee;
 }
+
 video {
   width: 100%;
   max-width: 600px;
   margin-top: 1rem;
+  display: block;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#result {
+  margin-top: 1rem;
+  font-size: 1.2rem;
 }
