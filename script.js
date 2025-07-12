@@ -13,14 +13,14 @@ Promise.all([
   status.textContent = "Modelos cargados. Listo.";
 });
 
-// Reproducir video desde archivo
+// Cargar el video seleccionado por el usuario
 videoInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
   video.src = URL.createObjectURL(file);
   video.load();
 });
 
-// Análisis principal
+// Análisis emocional por frames
 analyzeBtn.addEventListener('click', async () => {
   resultDiv.innerHTML = "Analizando emociones...";
   overlay.width = video.videoWidth;
@@ -31,42 +31,49 @@ analyzeBtn.addEventListener('click', async () => {
   let currentTime = 0;
   const step = 1; // segundos entre capturas
 
-  video.muted = true;
-  video.play();
+  video.pause();
 
   const processFrame = async () => {
     if (currentTime >= video.duration) {
-      video.pause();
       const dominant = getDominantEmotion(emotionCounts);
       const song = await getSongByMood(dominant);
       resultDiv.innerHTML = `Emoción dominante: <b>${dominant}</b><br>Recomendación: <a href="${song.url}">${song.title}</a>`;
       return;
     }
 
-    video.currentTime = currentTime;
-    await new Promise(r => setTimeout(r, 500)); // esperar cambio de frame
+    return new Promise((resolve) => {
+      const onSeeked = async () => {
+        video.removeEventListener('seeked', onSeeked);
 
-    context.drawImage(video, 0, 0, overlay.width, overlay.height);
-    const detections = await faceapi.detectAllFaces(overlay, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+        context.drawImage(video, 0, 0, overlay.width, overlay.height);
+        const detections = await faceapi.detectAllFaces(
+          overlay,
+          new faceapi.TinyFaceDetectorOptions()
+        ).withFaceExpressions();
 
-    detections.forEach(det => {
-      const expr = det.expressions.asSortedArray()[0];
-      emotionCounts[expr.expression] = (emotionCounts[expr.expression] || 0) + 1;
+        detections.forEach(det => {
+          const expr = det.expressions.asSortedArray()[0];
+          emotionCounts[expr.expression] = (emotionCounts[expr.expression] || 0) + 1;
+        });
+
+        currentTime += step;
+        resolve(processFrame());
+      };
+
+      video.currentTime = currentTime;
+      video.addEventListener('seeked', onSeeked);
     });
-
-    currentTime += step;
-    processFrame();
   };
 
-  processFrame();
+  await processFrame();
 });
 
-// Emoción más frecuente
+// Obtener emoción predominante
 function getDominantEmotion(counts) {
   return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
 }
 
-// Mapea emoción a canción
+// Mapear emoción a canción
 async function getSongByMood(emotion) {
   const moodMap = {
     happy: 'happy',
