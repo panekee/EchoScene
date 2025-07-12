@@ -36,7 +36,7 @@ analyzeBtn.addEventListener('click', async () => {
       requestAnimationFrame(analyzeFrame);
     } else {
       const avgEnergy = totalEnergy / samples;
-      const mood = avgEnergy > 20000 ? 'energetic' : 'calm';
+      const mood = avgEnergy > 8000 ? 'energetic' : 'calm';
       fetchAndMatchMood(mood);
     }
   };
